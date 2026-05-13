@@ -13,7 +13,6 @@ const FILLER = path.join(__dirname, 'fill_pdfs.py');
 app.use(express.json({ limit: '10mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Convert PDF to base64 images for Claude Vision
 app.post('/api/extract', upload.single('pdf'), async (req, res) => {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'deed-'));
   try {
@@ -29,67 +28,52 @@ app.post('/api/extract', upload.single('pdf'), async (req, res) => {
     if (images.length === 0) return res.status(400).json({ error: 'Could not convert PDF' });
     res.json({ images });
   } catch (err) {
+    console.error('EXTRACT ERROR:', err.message);
     res.status(500).json({ error: err.message });
   } finally {
     try { fs.rmSync(tmpDir, { recursive: true }); } catch(e) {}
   }
 });
 
-// Fill Affidavit PDF template
-app.post('/api/fill-affidavit', async (req, res) => {
-  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'aff-'));
+function runFiller(cmd, data, outExt, res, filenamePrefix) {
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), cmd + '-'));
   try {
-    const outPath = path.join(tmpDir, 'affidavit.pdf');
-    execFileSync('python3', [FILLER, 'affidavit', JSON.stringify(req.body), TEMPLATES, outPath], { timeout: 30000 });
+    const outPath = path.join(tmpDir, 'output.' + outExt);
+    console.log(`Running filler: ${cmd} -> ${outPath}`);
+    const result = execFileSync('python3', [FILLER, cmd, JSON.stringify(data), TEMPLATES, outPath], {
+      timeout: 30000,
+      encoding: 'utf8'
+    });
+    console.log(`Filler output: ${result}`);
+
+    if (!fs.existsSync(outPath)) {
+      throw new Error(`Output file not created: ${outPath}`);
+    }
+
     const buf = fs.readFileSync(outPath);
-    res.setHeader('Content-Type', 'application/pdf');
-    const safe = (req.body.grantor || 'deed').replace(/[^A-Za-z0-9]/g, '_').substring(0, 20);
-    res.setHeader('Content-Disposition', `attachment; filename="Affidavit_${safe}.pdf"`);
+    const safe = (data.grantor || 'deed').replace(/[^A-Za-z0-9]/g, '_').substring(0, 20);
+    const date = new Date().toISOString().split('T')[0];
+
+    if (outExt === 'pdf') {
+      res.setHeader('Content-Type', 'application/pdf');
+    } else {
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+    }
+    res.setHeader('Content-Disposition', `attachment; filename="${filenamePrefix}_${safe}_${date}.${outExt}"`);
     res.send(buf);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error(`FILLER ERROR (${cmd}):`, err.message);
+    if (err.stderr) console.error('stderr:', err.stderr);
+    res.status(500).json({ error: err.message + (err.stderr ? ' | ' + err.stderr : '') });
   } finally {
     try { fs.rmSync(tmpDir, { recursive: true }); } catch(e) {}
   }
-});
+}
 
-// Fill Seller's Residency PDF template
-app.post('/api/fill-residency', async (req, res) => {
-  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'res-'));
-  try {
-    const outPath = path.join(tmpDir, 'residency.pdf');
-    execFileSync('python3', [FILLER, 'residency', JSON.stringify(req.body), TEMPLATES, outPath], { timeout: 30000 });
-    const buf = fs.readFileSync(outPath);
-    res.setHeader('Content-Type', 'application/pdf');
-    const safe = (req.body.grantor || 'deed').replace(/[^A-Za-z0-9]/g, '_').substring(0, 20);
-    res.setHeader('Content-Disposition', `attachment; filename="Sellers_Residency_${safe}.pdf"`);
-    res.send(buf);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  } finally {
-    try { fs.rmSync(tmpDir, { recursive: true }); } catch(e) {}
-  }
-});
+app.post('/api/fill-affidavit', (req, res) => runFiller('affidavit', req.body, 'pdf', res, 'Affidavit'));
+app.post('/api/fill-residency', (req, res) => runFiller('residency', req.body, 'pdf', res, 'Sellers_Residency'));
+app.post('/api/fill-deed',      (req, res) => runFiller('deed',      req.body, 'docx', res, 'Deed'));
 
-// Fill Deed DOCX template
-app.post('/api/fill-deed', async (req, res) => {
-  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'deed-'));
-  try {
-    const outPath = path.join(tmpDir, 'deed.docx');
-    execFileSync('python3', [FILLER, 'deed', JSON.stringify(req.body), TEMPLATES, outPath], { timeout: 30000 });
-    const buf = fs.readFileSync(outPath);
-    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-    const safe = (req.body.grantor || 'deed').replace(/[^A-Za-z0-9]/g, '_').substring(0, 20);
-    res.setHeader('Content-Disposition', `attachment; filename="Deed_${safe}.docx"`);
-    res.send(buf);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  } finally {
-    try { fs.rmSync(tmpDir, { recursive: true }); } catch(e) {}
-  }
-});
-
-// Proxy Claude API
 app.post('/api/claude', async (req, res) => {
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -104,6 +88,7 @@ app.post('/api/claude', async (req, res) => {
     const data = await response.json();
     res.json(data);
   } catch (err) {
+    console.error('CLAUDE ERROR:', err.message);
     res.status(500).json({ error: { message: err.message } });
   }
 });
