@@ -1,100 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Deed Processor — NJ Estate Planning</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --cream: #F7F4EF; --ink: #1A1714; --ink-mid: #4A4540; --ink-light: #8A8480;
-  --gold: #B8924A; --gold-light: #E8D8B8; --gold-pale: #F5EDD8;
-  --border: #DDD8D0; --white: #FFFFFF;
-  --success: #3A6B4A; --danger: #8B3A3A; --info: #2A5580;
-  --radius: 6px;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#F7F4EF;--ink:#1A1714;--ink-mid:#4A4540;--ink-light:#8A8480;
+  --gold:#B8924A;--gold-light:#E8D8B8;--gold-pale:#F5EDD8;
+  --border:#DDD8D0;--white:#FFFFFF;--success:#3A6B4A;--danger:#8B3A3A;
+  --radius:6px;
 }
-body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); min-height: 100vh; font-size: 14px; }
-header { background: var(--ink); padding: 0 40px; display: flex; align-items: center; justify-content: space-between; height: 60px; border-bottom: 2px solid var(--gold); }
-.logo { display: flex; align-items: center; gap: 12px; }
-.logo-mark { width: 30px; height: 30px; border: 1.5px solid var(--gold); display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 16px; color: var(--gold); }
-.logo-text { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--cream); letter-spacing: 0.05em; }
-.logo-sub { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-light); }
-.badge { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); border: 1px solid var(--gold); padding: 3px 10px; border-radius: 2px; }
-.main { max-width: 860px; margin: 0 auto; padding: 48px 24px; }
-.upload-card { background: var(--white); border: 1.5px dashed var(--border); border-radius: 12px; padding: 48px 32px; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; margin-bottom: 24px; }
-.upload-card:hover, .upload-card.over { border-color: var(--gold); background: var(--gold-pale); }
-.upload-card input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
-.upload-icon { font-size: 40px; margin-bottom: 14px; }
-.upload-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 500; margin-bottom: 6px; color: var(--ink); }
-.upload-sub { font-size: 13px; color: var(--ink-light); }
-.file-loaded { display: none; background: var(--gold-pale); border: 1px solid var(--gold-light); border-radius: var(--radius); padding: 14px 18px; margin-bottom: 24px; align-items: center; gap: 12px; }
-.file-loaded-icon { font-size: 24px; }
-.file-loaded-info { flex: 1; }
-.file-loaded-name { font-weight: 500; font-size: 14px; color: var(--ink); }
-.file-loaded-sub { font-size: 11px; color: var(--ink-light); margin-top: 2px; }
-.file-remove { background: none; border: none; cursor: pointer; color: var(--ink-light); font-size: 18px; padding: 4px; }
-.file-remove:hover { color: var(--danger); }
-.overrides-toggle { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; margin-bottom: 8px; font-size: 13px; color: var(--ink-mid); }
-.overrides-toggle:hover { border-color: var(--gold); }
-.overrides-toggle .arrow { font-size: 10px; transition: transform 0.2s; color: var(--ink-light); }
-.overrides-toggle.open .arrow { transform: rotate(180deg); }
-.overrides-body { display: none; background: var(--white); border: 1px solid var(--border); border-top: none; border-radius: 0 0 var(--radius) var(--radius); padding: 16px; margin-bottom: 24px; }
-.overrides-body.open { display: block; }
-.override-hint { font-size: 11px; color: var(--ink-light); margin-bottom: 12px; font-style: italic; }
-.fg { margin-bottom: 10px; }
-.fl { display: block; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-light); margin-bottom: 4px; font-weight: 500; }
-.fi { width: 100%; padding: 7px 10px; border: 1px solid var(--border); border-radius: 4px; font-size: 13px; font-family: 'DM Sans', sans-serif; color: var(--ink); background: var(--white); outline: none; }
-.fi:focus { border-color: var(--gold); }
-.fi::placeholder { color: var(--ink-light); }
-.fr2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.fr3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-.gen-btn { width: 100%; padding: 16px; background: var(--ink); color: var(--gold); border: none; border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 32px; }
-.gen-btn:hover { background: #2E2A26; }
-.gen-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-.spinner { width: 16px; height: 16px; border: 2px solid rgba(184,146,74,0.3); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.7s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-.progress-wrap { display: none; margin-bottom: 32px; background: var(--white); border-radius: var(--radius); padding: 20px 24px; border: 1px solid var(--border); }
-.progress-wrap.on { display: block; }
-.progress-step { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); }
-.progress-step:last-child { border-bottom: none; }
-.step-icon { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; background: var(--cream); border: 1.5px solid var(--border); color: var(--ink-light); }
-.step-icon.done { background: var(--success); border-color: var(--success); color: white; }
-.step-icon.active { background: var(--gold-pale); border-color: var(--gold); color: var(--gold); animation: pulse 1s ease infinite; }
-.step-label { font-size: 13px; color: var(--ink-light); }
-.step-label.active { color: var(--ink); font-weight: 500; }
-.step-label.done { color: var(--success); }
-@keyframes pulse { 0%,100%{opacity:1}50%{opacity:.6} }
-.results { display: none; }
-.results.on { display: block; }
-.results-title { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 500; margin-bottom: 6px; }
-.results-sub { font-size: 13px; color: var(--ink-light); margin-bottom: 24px; }
-.doc-tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
-.doc-tab { padding: 8px 18px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 12px; font-weight: 500; cursor: pointer; color: var(--ink-mid); background: var(--cream); transition: all 0.15s; }
-.doc-tab.active { background: var(--ink); color: var(--gold); border-color: var(--ink); }
-.doc-card { background: var(--white); box-shadow: 0 2px 20px rgba(26,23,20,0.08); border-top: 3px solid var(--gold); }
-.doc-card-hdr { padding: 22px 40px 16px; border-bottom: 1px solid var(--border); }
-.doc-card-type { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
-.doc-card-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; }
-.doc-card-sub { font-size: 11px; color: var(--ink-light); margin-top: 3px; }
-.doc-card-body { padding: 22px 40px 32px; font-size: 13px; line-height: 1.9; white-space: pre-wrap; color: var(--ink); max-height: 520px; overflow-y: auto; }
-.doc-actions { display: flex; gap: 10px; padding: 12px 0 8px; }
-.act-btn { padding: 9px 20px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 12px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; background: var(--white); color: var(--ink-mid); transition: all 0.15s; }
-.act-btn:hover { border-color: var(--gold); color: var(--ink); }
-.act-btn.primary { background: var(--ink); color: var(--gold); border-color: var(--ink); }
-.act-btn.primary:hover { background: #2E2A26; }
-.download-all { width: 100%; padding: 14px; background: var(--success); color: white; border: none; border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 16px; }
-.download-all:hover { background: #2d5a3a; }
-.reset-btn { width: 100%; padding: 11px; background: transparent; color: var(--ink-light); border: 1px solid var(--border); border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 12px; cursor: pointer; margin-top: 10px; }
-.reset-btn:hover { border-color: var(--ink-light); color: var(--ink); }
-.error-box { background: #FEF2F2; border: 1px solid #FECACA; border-radius: var(--radius); padding: 14px 18px; color: var(--danger); font-size: 13px; margin-bottom: 20px; display: none; }
-.error-box.on { display: block; }
-.check-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 12px; color: var(--ink-mid); }
-.check-row input { accent-color: var(--gold); }
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-.toast { position: fixed; bottom: 20px; right: 20px; background: var(--ink); color: var(--cream); padding: 10px 18px; border-radius: var(--radius); font-size: 12px; border-left: 3px solid var(--gold); transform: translateY(50px); opacity: 0; transition: all 0.3s; z-index: 999; }
-.toast.on { transform: translateY(0); opacity: 1; }
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;font-size:14px}
+header{background:var(--ink);padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:60px;border-bottom:2px solid var(--gold)}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-mark{width:30px;height:30px;border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--gold)}
+.logo-text{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--cream);letter-spacing:.05em}
+.logo-sub{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-light)}
+.badge{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);border:1px solid var(--gold);padding:3px 10px;border-radius:2px}
+.main{max-width:780px;margin:0 auto;padding:40px 24px}
+.upload-card{background:var(--white);border:1.5px dashed var(--border);border-radius:12px;padding:48px 32px;text-align:center;cursor:pointer;transition:all .2s;position:relative;margin-bottom:20px}
+.upload-card:hover,.upload-card.over{border-color:var(--gold);background:var(--gold-pale)}
+.upload-card input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-icon{font-size:40px;margin-bottom:12px}
+.upload-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;margin-bottom:6px}
+.upload-sub{font-size:13px;color:var(--ink-light);line-height:1.6}
+.file-chip{display:none;background:var(--gold-pale);border:1px solid var(--gold-light);border-radius:var(--radius);padding:12px 16px;margin-bottom:20px;align-items:center;gap:10px;font-size:13px}
+.file-chip-name{flex:1;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.file-chip button{background:none;border:none;cursor:pointer;color:var(--ink-light);font-size:16px}
+.file-chip button:hover{color:var(--danger)}
+.form-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:20px}
+.form-title{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:500;margin-bottom:16px;color:var(--gold);letter-spacing:.04em;text-transform:uppercase;font-size:13px}
+.fg{margin-bottom:12px}
+.fl{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-light);margin-bottom:4px;font-weight:500}
+.fl .req{color:var(--gold)}
+.fi{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:4px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--ink);background:var(--white);outline:none;transition:border-color .15s}
+.fi:focus{border-color:var(--gold)}
+.fi::placeholder{color:var(--ink-light)}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.hint{font-size:11px;color:var(--ink-light);margin-top:3px;font-style:italic}
+.info-box{background:#EEF4FA;border-left:3px solid #2A5580;border-radius:var(--radius);padding:9px 12px;font-size:12px;color:#1e4470;margin-bottom:16px;line-height:1.5}
+.gen-btn{width:100%;padding:15px;background:var(--ink);color:var(--gold);border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .2s;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:28px}
+.gen-btn:hover{background:#2E2A26}
+.gen-btn:disabled{opacity:.4;cursor:not-allowed}
+.spinner{width:15px;height:15px;border:2px solid rgba(184,146,74,.3);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.progress-wrap{display:none;background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:18px 22px;margin-bottom:28px}
+.progress-wrap.on{display:block}
+.ps{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)}
+.ps:last-child{border-bottom:none}
+.psicon{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;background:var(--cream);border:1.5px solid var(--border);color:var(--ink-light)}
+.psicon.done{background:var(--success);border-color:var(--success);color:white}
+.psicon.active{background:var(--gold-pale);border-color:var(--gold);color:var(--gold);animation:pulse 1s ease infinite}
+.pslbl{font-size:12px;color:var(--ink-light)}
+.pslbl.active{color:var(--ink);font-weight:500}
+.pslbl.done{color:var(--success)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.results{display:none}
+.results.on{display:block}
+.results-hdr{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;margin-bottom:4px}
+.results-sub{font-size:12px;color:var(--ink-light);margin-bottom:20px}
+.doc-row{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;display:flex;align-items:center;gap:14px;margin-bottom:10px}
+.doc-row-icon{font-size:22px}
+.doc-row-info{flex:1}
+.doc-row-title{font-weight:500;font-size:14px;color:var(--ink)}
+.doc-row-sub{font-size:11px;color:var(--ink-light);margin-top:2px}
+.doc-row-btn{padding:7px 16px;background:var(--ink);color:var(--gold);border:none;border-radius:4px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap}
+.doc-row-btn:hover{background:#2E2A26}
+.dl-all{width:100%;padding:13px;background:var(--success);color:white;border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px}
+.dl-all:hover{background:#2d5a3a}
+.reset-btn{width:100%;padding:10px;background:transparent;color:var(--ink-light);border:1px solid var(--border);border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;margin-top:8px}
+.reset-btn:hover{border-color:var(--ink-light);color:var(--ink)}
+.error-box{background:#FEF2F2;border:1px solid #FECACA;border-radius:var(--radius);padding:12px 16px;color:var(--danger);font-size:13px;margin-bottom:16px;display:none}
+.error-box.on{display:block}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--ink);color:var(--cream);padding:10px 16px;border-radius:var(--radius);font-size:12px;border-left:3px solid var(--gold);transform:translateY(50px);opacity:0;transition:all .3s;z-index:999}
+.toast.on{transform:translateY(0);opacity:1}
 </style>
 </head>
 <body>
@@ -111,168 +95,181 @@ header { background: var(--ink); padding: 0 40px; display: flex; align-items: ce
 <div class="main">
   <div id="uploadSection">
     <div class="upload-card" id="dz" ondragover="dzOver(event)" ondragleave="dzLeave()" ondrop="dzDrop(event)">
-      <input type="file" id="fileIn" accept=".pdf" onchange="handleFile(this.files[0])" />
+      <input type="file" id="fileIn" accept=".pdf" onchange="handleFile(this.files[0])"/>
       <div class="upload-icon">📄</div>
       <div class="upload-title">Drop the Original Deed PDF here</div>
-      <div class="upload-sub">Claude extracts all data and generates 3 documents automatically · PDF only</div>
+      <div class="upload-sub">Claude reads the scanned deed and extracts all data automatically<br>PDF only — no data entry required</div>
     </div>
-    <div class="file-loaded" id="fileLoaded">
-      <div class="file-loaded-icon">📄</div>
-      <div class="file-loaded-info">
-        <div class="file-loaded-name" id="fileName"></div>
-        <div class="file-loaded-sub" id="fileSize"></div>
-      </div>
-      <button class="file-remove" onclick="resetAll()">✕</button>
+    <div class="file-chip" id="fileChip">
+      <span>📄</span>
+      <span class="file-chip-name" id="chipName"></span>
+      <button onclick="resetAll()">✕</button>
     </div>
-    <div class="overrides-toggle" id="overridesToggle" onclick="toggleOverrides()">
-      <span>Optional overrides <span style="font-size:11px;color:var(--ink-light)">(attorney, trust info, SSN — leave blank to auto-detect)</span></span>
-      <span class="arrow">▼</span>
-    </div>
-    <div class="overrides-body" id="overridesBody">
-      <p class="override-hint">All optional. Claude will extract what it can from the PDF. Fill only to override.</p>
+    <div class="form-card">
+      <div class="form-title">Required Information (not in the original deed)</div>
+      <div class="info-box">These fields must be entered manually. Everything else is read from the deed PDF automatically.</div>
       <div class="fr2">
-        <div class="fg"><label class="fl">Prepared By (Attorney)</label><input type="text" class="fi" id="ov_preparedBy" placeholder="Russ Nesevich, Esq." /></div>
-        <div class="fg"><label class="fl">Return To (Firm)</label><input type="text" class="fi" id="ov_returnTo" placeholder="Nesevich Law, LLC, Moorestown NJ" /></div>
+        <div class="fg">
+          <label class="fl">Grantee / Trust Name <span class="req">*</span></label>
+          <input type="text" class="fi" id="inp_grantee" placeholder="e.g. Kline Family Living Trust"/>
+        </div>
+        <div class="fg">
+          <label class="fl">Trustee Name(s)</label>
+          <input type="text" class="fi" id="inp_trustee" placeholder="e.g. William J. Kline, Jr."/>
+        </div>
       </div>
       <div class="fr2">
-        <div class="fg"><label class="fl">Grantee / Trust Name</label><input type="text" class="fi" id="ov_grantee" placeholder="Kline Family Living Trust" /></div>
-        <div class="fg"><label class="fl">Trustee Name</label><input type="text" class="fi" id="ov_trustee" placeholder="William J. Kline, Jr." /></div>
+        <div class="fg">
+          <label class="fl">Trust Date</label>
+          <input type="date" class="fi" id="inp_trustDate"/>
+        </div>
+        <div class="fg">
+          <label class="fl">Signing / Deed Date <span style="color:var(--ink-light);font-size:10px">(optional — leave blank to fill in later)</span></label>
+          <input type="date" class="fi" id="inp_signingDate"/>
+        </div>
       </div>
-      <div class="fr3">
-        <div class="fg"><label class="fl">Trust Date</label><input type="date" class="fi" id="ov_trustDate" /></div>
-        <div class="fg"><label class="fl">Deed Date</label><input type="date" class="fi" id="ov_deedDate" /></div>
-        <div class="fg"><label class="fl">Grantor SSN (last 3)</label><input type="text" class="fi" id="ov_ssn" placeholder="456" maxlength="3" /></div>
+      <div class="fr2">
+        <div class="fg">
+          <label class="fl">Grantor SSN — Last 3 digits <span class="req">*</span></label>
+          <input type="text" class="fi" id="inp_ssn" placeholder="e.g. 456" maxlength="3"/>
+        </div>
+        <div class="fg">
+          <label class="fl">Date of Death (if applicable)</label>
+          <input type="date" class="fi" id="inp_dod"/>
+        </div>
       </div>
-      <div style="margin-top:8px;">
-        <div style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-light);margin-bottom:8px;font-weight:500;">Seller's Residency Boxes (default: 1, 2, 6)</div>
-        <div class="check-row"><input type="checkbox" id="box1" checked /><span><strong>Box 1</strong> — NJ resident taxpayer</span></div>
-        <div class="check-row"><input type="checkbox" id="box2" checked /><span><strong>Box 2</strong> — Principal residence (§121)</span></div>
-        <div class="check-row"><input type="checkbox" id="box3" /><span><strong>Box 3</strong> — Foreclosure/transfer in lieu</span></div>
-        <div class="check-row"><input type="checkbox" id="box5" /><span><strong>Box 5</strong> — Not individual/estate/trust</span></div>
-        <div class="check-row"><input type="checkbox" id="box6" checked /><span><strong>Box 6</strong> — Consideration ≤ $1,000</span></div>
-        <div class="check-row"><input type="checkbox" id="box8" /><span><strong>Box 8</strong> — Executor/admin to devisee</span></div>
-        <div class="check-row"><input type="checkbox" id="box12" /><span><strong>Box 12</strong> — Between spouses/divorce (§1041)</span></div>
+      <div class="fg">
+        <label class="fl">Prepared By (Attorney)</label>
+        <input type="text" class="fi" id="inp_preparedBy" placeholder="e.g. Russ Nesevich, Esq."/>
+      </div>
+      <div class="fg">
+        <label class="fl">Return To (Firm & Address)</label>
+        <input type="text" class="fi" id="inp_returnTo" placeholder="e.g. Nesevich Law, LLC, 400 North Church St, Moorestown NJ 08057"/>
       </div>
     </div>
     <div class="error-box" id="errorBox"></div>
     <button class="gen-btn" id="genBtn" onclick="generate()" disabled>
       <span id="genBtnText">✦ Generate All 3 Documents</span>
-      <span class="spinner" id="genSpinner" style="display:none;"></span>
+      <span class="spinner" id="genSpinner" style="display:none"></span>
     </button>
   </div>
   <div class="progress-wrap" id="progressWrap">
-    <div class="progress-step"><div class="step-icon" id="s1icon">1</div><div class="step-label" id="s1label">Reading PDF…</div></div>
-    <div class="progress-step"><div class="step-icon" id="s2icon">2</div><div class="step-label" id="s2label">Extracting deed data with Claude…</div></div>
-    <div class="progress-step"><div class="step-icon" id="s3icon">3</div><div class="step-label" id="s3label">Generating Deed document…</div></div>
-    <div class="progress-step"><div class="step-icon" id="s4icon">4</div><div class="step-label" id="s4label">Generating Affidavit of Consideration…</div></div>
-    <div class="progress-step"><div class="step-icon" id="s5icon">5</div><div class="step-label" id="s5label">Generating Seller's Residency…</div></div>
+    <div class="ps"><div class="psicon" id="s1i">1</div><div class="pslbl" id="s1l">Converting PDF to images…</div></div>
+    <div class="ps"><div class="psicon" id="s2i">2</div><div class="pslbl" id="s2l">Claude reading the deed…</div></div>
+    <div class="ps"><div class="psicon" id="s3i">3</div><div class="pslbl" id="s3l">Generating Deed (.docx)…</div></div>
+    <div class="ps"><div class="psicon" id="s4i">4</div><div class="pslbl" id="s4l">Generating Affidavit of Consideration…</div></div>
+    <div class="ps"><div class="psicon" id="s5i">5</div><div class="pslbl" id="s5l">Generating Seller's Residency…</div></div>
   </div>
   <div class="results" id="results">
-    <div class="results-title">Documents Ready</div>
+    <div class="results-hdr">Documents Ready</div>
     <div class="results-sub" id="resultsSub">3 documents generated</div>
-    <div class="doc-tabs">
-      <div class="doc-tab active" id="dtab-deed" onclick="showDoc('deed')">Deed</div>
-      <div class="doc-tab" id="dtab-aff" onclick="showDoc('aff')">Affidavit of Consideration</div>
-      <div class="doc-tab" id="dtab-res" onclick="showDoc('res')">Seller's Residency</div>
+    <div class="doc-row">
+      <div class="doc-row-icon">📝</div>
+      <div class="doc-row-info">
+        <div class="doc-row-title">Deed of Conveyance</div>
+        <div class="doc-row-sub">Word document (.docx) · Ready to print and sign</div>
+      </div>
+      <button class="doc-row-btn" onclick="downloadDOCX()">↓ Download .docx</button>
     </div>
-    <div id="view-deed">
-      <div class="doc-card">
-        <div class="doc-card-hdr"><div class="doc-card-type">New Jersey · Burlington County · Deed</div><div class="doc-card-title">Deed of Conveyance</div><div class="doc-card-sub" id="deed-sub"></div></div>
-        <div class="doc-card-body" id="deed-body"></div>
+    <div class="doc-row">
+      <div class="doc-row-icon">📋</div>
+      <div class="doc-row-info">
+        <div class="doc-row-title">Affidavit of Consideration (RTF-1)</div>
+        <div class="doc-row-sub" id="aff-sub">State of New Jersey · Burlington County</div>
       </div>
-      <div class="doc-actions">
-        <button class="act-btn" onclick="copyDoc('deed')">⎘ Copy</button>
-        <button class="act-btn primary" onclick="downloadPDF('deed','Deed')">↓ Download PDF</button>
-      </div>
+      <button class="doc-row-btn" onclick="downloadPDF('aff','Affidavit_of_Consideration')">↓ Download PDF</button>
     </div>
-    <div id="view-aff" style="display:none;">
-      <div class="doc-card">
-        <div class="doc-card-hdr"><div class="doc-card-type">RTF-1 · State of New Jersey</div><div class="doc-card-title">Affidavit of Consideration</div><div class="doc-card-sub" id="aff-sub"></div></div>
-        <div class="doc-card-body" id="aff-body"></div>
+    <div class="doc-row">
+      <div class="doc-row-icon">📋</div>
+      <div class="doc-row-info">
+        <div class="doc-row-title">Seller's Residency Certification (GIT/REP-3)</div>
+        <div class="doc-row-sub" id="res-sub">State of New Jersey</div>
       </div>
-      <div class="doc-actions">
-        <button class="act-btn" onclick="copyDoc('aff')">⎘ Copy</button>
-        <button class="act-btn primary" onclick="downloadPDF('aff','Affidavit_of_Consideration')">↓ Download PDF</button>
-      </div>
+      <button class="doc-row-btn" onclick="downloadPDF('res','Sellers_Residency')">↓ Download PDF</button>
     </div>
-    <div id="view-res" style="display:none;">
-      <div class="doc-card">
-        <div class="doc-card-hdr"><div class="doc-card-type">GIT/REP-3 · State of New Jersey</div><div class="doc-card-title">Seller's Residency Certification</div><div class="doc-card-sub" id="res-sub"></div></div>
-        <div class="doc-card-body" id="res-body"></div>
-      </div>
-      <div class="doc-actions">
-        <button class="act-btn" onclick="copyDoc('res')">⎘ Copy</button>
-        <button class="act-btn primary" onclick="downloadPDF('res','Sellers_Residency')">↓ Download PDF</button>
-      </div>
-    </div>
-    <button class="download-all" onclick="downloadAllPDFs()">↓ Download All 3 as PDF</button>
+    <button class="dl-all" onclick="downloadAll()">↓ Download All 3 Documents</button>
     <button class="reset-btn" onclick="resetAll()">↩ Process Another Deed</button>
   </div>
 </div>
 <div class="toast" id="toast"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
-let pdfFile=null,docs={deed:'',aff:'',res:''},extractedData={};
+let pdfFile=null, extractedData={}, docs={aff:'',res:''}, deedDocxBlob=null;
+const today = new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+
 const dz=document.getElementById('dz');
-function dzOver(e){e.preventDefault();dz.classList.add('over');}
-function dzLeave(){dz.classList.remove('over');}
-function dzDrop(e){e.preventDefault();dz.classList.remove('over');if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]);}
-function handleFile(file){
-  if(!file.name.toLowerCase().endsWith('.pdf')){showError('Please upload a PDF file.');return;}
-  pdfFile=file;dz.style.display='none';
-  const fl=document.getElementById('fileLoaded');fl.style.display='flex';
-  document.getElementById('fileName').textContent=file.name;
-  document.getElementById('fileSize').textContent=(file.size/1024).toFixed(0)+' KB';
+function dzOver(e){e.preventDefault();dz.classList.add('over')}
+function dzLeave(){dz.classList.remove('over')}
+function dzDrop(e){e.preventDefault();dz.classList.remove('over');if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0])}
+function handleFile(f){
+  if(!f.name.toLowerCase().endsWith('.pdf')){showError('Please upload a PDF file.');return}
+  pdfFile=f;dz.style.display='none';
+  const fc=document.getElementById('fileChip');fc.style.display='flex';
+  document.getElementById('chipName').textContent=f.name;
   document.getElementById('genBtn').disabled=false;hideError();
 }
-function toggleOverrides(){
-  document.getElementById('overridesToggle').classList.toggle('open');
-  document.getElementById('overridesBody').classList.toggle('open');
-}
-function getOverrides(){
-  const fd=s=>{if(!s)return '';const d=new Date(s+'T12:00:00');return d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});};
-  const boxes=[1,2,3,5,6,8,12].filter(n=>{const e=document.getElementById('box'+n);return e&&e.checked;}).map(n=>'Box '+n);
-  return{
-    override_preparedBy:document.getElementById('ov_preparedBy').value.trim(),
-    override_returnTo:document.getElementById('ov_returnTo').value.trim(),
-    override_grantee:document.getElementById('ov_grantee').value.trim(),
-    override_trustee:document.getElementById('ov_trustee').value.trim(),
-    override_trustDate:fd(document.getElementById('ov_trustDate').value),
-    override_deedDate:fd(document.getElementById('ov_deedDate').value),
-    override_ssn:document.getElementById('ov_ssn').value.trim(),
-    checkedBoxes:boxes
-  };
-}
+
+function fmtDate(s){if(!s)return '';const d=new Date(s+'T12:00:00');return d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}
+function v(id){const e=document.getElementById(id);return e?e.value.trim():''}
+
 async function generate(){
   if(!pdfFile)return;
+  const grantee=v('inp_grantee');
+  if(!grantee){showError('Please enter the Grantee / Trust Name.');return}
+  // signing date is optional
+  if(!v('inp_ssn')){showError('Please enter the last 3 digits of the Grantor SSN.');return}
+
+  const inputs={
+    newGrantee:grantee,
+    trustee:v('inp_trustee'),
+    trustDate:fmtDate(v('inp_trustDate')),
+    signingDate:fmtDate(v('inp_signingDate')),
+    ssn:v('inp_ssn'),
+    dod:fmtDate(v('inp_dod')),
+    preparedBy:v('inp_preparedBy'),
+    returnTo:v('inp_returnTo'),
+  };
+
   document.getElementById('genBtn').disabled=true;
   document.getElementById('genBtnText').style.display='none';
   document.getElementById('genSpinner').style.display='inline-block';
   document.getElementById('progressWrap').classList.add('on');
   hideError();
+
   try{
-    setStep(1,'active','Reading PDF...');
+    setStep(1,'active','Converting PDF to images…');
     const fd=new FormData();fd.append('pdf',pdfFile);
     const er=await fetch('/api/extract',{method:'POST',body:fd});
     const ed=await er.json();
-    if(ed.error)throw new Error('PDF read failed: '+ed.error);
-    setStep(1,'done','PDF read successfully');
-    setStep(2,'active','Extracting deed data with Claude...');
-    const rawJson=await callClaude(extractPrompt(ed.text),1500);
+    if(ed.error)throw new Error('PDF conversion failed: '+ed.error);
+    setStep(1,'done','PDF converted');
+
+    setStep(2,'active','Claude reading the deed…');
+    const rawJson=await callClaudeVision(extractPrompt(),ed.images,2000);
     let parsed;
-    try{const clean=rawJson.replace(/```json|```/g,'').trim();parsed=JSON.parse(clean);}
-    catch(e){throw new Error('Could not parse deed data. Please try again.');}
-    extractedData={...parsed,...getOverrides()};
+    try{parsed=JSON.parse(rawJson.replace(/```json|```/g,'').trim())}
+    catch(e){throw new Error('Could not parse deed data. Please try again.')}
+    extractedData={...parsed,...inputs};
     setStep(2,'done','Deed data extracted');
-    setStep(3,'active','Generating Deed...');
-    docs.deed=await callClaude(deedPrompt(extractedData,ed.text),3000);
-    setStep(3,'done','Deed generated');
-    setStep(4,'active','Generating Affidavit of Consideration...');
+
+    setStep(3,'active','Generating Deed (.docx)…');
+    const docxRes=await fetch('/api/generate-docx',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(extractedData)
+    });
+    if(!docxRes.ok){const e=await docxRes.json();throw new Error('DOCX error: '+e.error)}
+    deedDocxBlob=await docxRes.blob();
+    setStep(3,'done','Deed (.docx) generated');
+
+    setStep(4,'active','Generating Affidavit of Consideration…');
     docs.aff=await callClaude(affPrompt(extractedData),2000);
     setStep(4,'done','Affidavit generated');
-    setStep(5,'active',"Generating Seller's Residency...");
+
+    setStep(5,'active',"Generating Seller's Residency…");
     docs.res=await callClaude(resPrompt(extractedData),2000);
     setStep(5,'done',"Seller's Residency generated");
+
     showResults();
   }catch(err){
     showError(err.message);
@@ -282,95 +279,162 @@ async function generate(){
     document.getElementById('genSpinner').style.display='none';
   }
 }
+
+async function callClaudeVision(prompt,images,maxTokens){
+  const content=images.map(img=>({type:'image',source:{type:'base64',media_type:'image/jpeg',data:img}}));
+  content.push({type:'text',text:prompt});
+  const res=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    model:'claude-sonnet-4-5',max_tokens:maxTokens,
+    system:'You are a legal document specialist. Read scanned NJ deed documents precisely. Return only valid JSON when asked.',
+    messages:[{role:'user',content}]
+  })});
+  const data=await res.json();
+  if(data.error)throw new Error(data.error.message);
+  return data.content.map(b=>b.text||'').join('');
+}
+
 async function callClaude(prompt,maxTokens){
   const res=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-    model:'claude-sonnet-4-5',max_tokens:maxTokens||2000,
-    system:`You are a specialized legal document preparer for a New Jersey estate planning and probate law firm. Expert in NJ deed preparation, Affidavit of Consideration RTF-1 (N.J.S.A. 46:15-5), Seller's Residency GIT/REP-3, Burlington County requirements, N.J.S.A. 46:4-6 covenant, N.J.S.A. 46:26A-1 Tax Map Reference, being/prior deed clauses, and NJ notary blocks. Output ONLY the requested content. No explanations. Use exact NJ legal language. For $1.00 write "One and No/100 ($1.00) Dollar". Always include Burlington County NJ acknowledgment block on deeds.`,
+    model:'claude-sonnet-4-5',max_tokens:maxTokens,
+    system:"You are a specialized legal document preparer for a NJ estate planning and probate law firm. Expert in Affidavit of Consideration RTF-1 (N.J.S.A. 46:15-5), Seller's Residency GIT/REP-3, Burlington County requirements. Output ONLY the document text, no explanations.",
     messages:[{role:'user',content:prompt}]
   })});
   const data=await res.json();
   if(data.error)throw new Error(data.error.message);
   return data.content.map(b=>b.text||'').join('');
 }
-function extractPrompt(text){
-  return `Extract data from this NJ deed and return ONLY valid JSON, no markdown:\n\n"""\n${text.substring(0,6000)}\n"""\n\nReturn:\n{"grantor":"","grantorAddr":"","grantee":"","granteeAddr":"","deedDate":"","consideration":"","municipality":"","county":"","block":"","lot":"","qualifier":"","propAddr":"","legalDesc":"","priorGrantees":"","priorDeedDate":"","priorRecordedDate":"","priorBook":"","priorPage":"","priorCounty":"Burlington","countyMunicipalCode":"0319","isTransferToTrust":false,"trustName":"","trustDate":"","trusteeName":""}`;
+
+function extractPrompt(){
+  return `Read this scanned NJ deed carefully. Return ONLY valid JSON, no markdown.
+
+Return:
+{"grantor":"","grantor2":"","grantorAddr":"","deedDate":"","consideration":"$1.00","municipality":"","county":"Burlington","block":"","lot":"","qualifier":"","propAddr":"","legalDesc":"","priorGrantees":"","priorDeedDate":"","priorRecordedDate":"","priorBook":"","priorPage":"","priorCounty":"Burlington","countyMunicipalCode":"0319"}
+
+Notes:
+- grantor: first grantor full legal name
+- grantor2: second grantor if present (e.g. spouse), else empty
+- grantorAddr: grantor's address from deed
+- legalDesc: copy the FULL legal description verbatim, every word
+- priorGrantees: names from the BEING clause (current owners)
+- countyMunicipalCode: look up from the municipality name — Maple Shade TWP = 0319, use the correct code for other municipalities
+- Return ONLY the JSON object`;
 }
-function deedPrompt(d,originalText){
-  const grantee=d.override_grantee||d.trustName||d.grantee;
-  const trustee=d.override_trustee||d.trusteeName;
-  const trustDate=d.override_trustDate||d.trustDate;
-  const deedDate=d.override_deedDate||d.deedDate;
-  const granteeClause=(d.isTransferToTrust||d.override_grantee)?`${grantee}${trustDate?', a Trust dated '+trustDate:''}${trustee?', '+trustee+', Trustee':''}`:grantee;
-  const being=(d.priorGrantees&&d.priorBook)?`BEING the same premises conveyed to ${d.priorGrantees}, by Deed dated ${d.priorDeedDate} and recorded on ${d.priorRecordedDate} in the ${d.priorCounty||'Burlington'} County Clerk/Register's Office, in Deed Book ${d.priorBook}, Page ${d.priorPage}.`:'';
-  return `Generate a complete New Jersey Deed:\n\nPREPARED BY: ${d.override_preparedBy||''}\nRETURN TO: ${d.override_returnTo||''}\nDEED DATE: ${deedDate}\nGRANTOR: ${d.grantor}\nGRANTOR ADDRESS: ${d.grantorAddr}\nGRANTEE: ${granteeClause}\nGRANTEE ADDRESS: ${d.granteeAddr||d.grantorAddr}\nCONSIDERATION: ${d.consideration||'$1.00'}\nMUNICIPALITY: ${d.municipality}, County of ${d.county||'Burlington'}, State of New Jersey\nBLOCK: ${d.block}  LOT: ${d.lot}\nPROPERTY ADDRESS: ${d.propAddr}\nLEGAL DESCRIPTION: ${d.legalDesc||'See attached Legal Description annexed hereto.'}\nBEING CLAUSE: ${being}\n\nInclude: header, DEED title, opening date line, BETWEEN/AND blocks, transfer paragraph, Tax Map Reference (N.J.S.A. 46:26A-1), property paragraph, legal description, Promises by Grantor (N.J.S.A. 46:4-6), NOTE FOR INFORMATION PURPOSES ONLY, BEING clause, signature lines with (Seal), Burlington County NJ Acknowledgment block, RECORD AND RETURN TO footer. Output only the deed text.`;
-}
+
 function affPrompt(d){
-  const deedDate=d.override_deedDate||d.deedDate;
-  const ssn=d.override_ssn?'XXX-XX-'+d.override_ssn:'XXX-XX-___';
-  return `Generate completed NJ Affidavit of Consideration RTF-1 (N.J.S.A. 46:15-5):\n\nSTATE OF NJ\nCOUNTY: ${d.county||'Burlington'}\nCOUNTY MUNICIPAL CODE: ${d.countyMunicipalCode||'0319'}\nMUNICIPALITY: ${d.municipality}\nDEPONENT/GRANTOR: ${d.grantor}\nDEED DATE: ${deedDate}\nBLOCK: ${d.block}  LOT: ${d.lot}\nPROPERTY: ${d.propAddr}\nCONSIDERATION: ${d.consideration||'$1.00'} — No prior mortgage\nFULL EXEMPTION: For consideration of less than $100.\nGRANTOR ADDRESS: ${d.grantorAddr}\nSSN LAST 3: ${ssn}\n\nSection 5 Partial Exemption checkboxes all unchecked. Output only document text.`;
+  const ssn=d.ssn?'XXX-XX-'+d.ssn:'XXX-XX-___';
+  return `Generate completed NJ Affidavit of Consideration for Use by Seller (RTF-1, N.J.S.A. 46:15-5 et seq.) with these exact values:
+
+STATE OF NEW JERSEY
+COUNTY: ${d.county||'Burlington'}
+COUNTY MUNICIPAL CODE: ${d.countyMunicipalCode||'0319'}
+MUNICIPALITY OF PROPERTY LOCATION: ${d.municipality}
+
+(1) PARTY:
+Deponent: ${d.grantor}${d.grantor2?' and '+d.grantor2:''}
+Role: Grantor
+Deed dated: ${d.signingDate||'_______________'}
+Block: ${d.block}  Lot: ${d.lot}
+Located at: ${d.propAddr}
+
+(2) CONSIDERATION: $1.00
+No prior mortgage to which property is subject.
+
+(4) FULL EXEMPTION FROM FEE:
+For consideration of less than $100.
+
+SIGNATURE BLOCK:
+Grantor Name: ${d.grantor}
+Deponent/Grantor Address: ${d.grantorAddr}
+Last 3 SSN digits: ${ssn}
+
+Format as a completed RTF-1 form with all sections clearly labeled. Section 5 all checkboxes unchecked. Output only document text.`;
 }
+
 function resPrompt(d){
-  const deedDate=d.override_deedDate||d.deedDate;
-  const boxes=d.checkedBoxes&&d.checkedBoxes.length?d.checkedBoxes.join(', '):'Box 1, Box 2, Box 6';
-  return `Generate completed NJ Seller's Residency Certification GIT/REP-3:\n\nSELLER: ${d.grantor}\nADDRESS: ${d.grantorAddr}\nBLOCK: ${d.block}  LOT: ${d.lot}  QUALIFIER: ${d.qualifier||'N/A'}\nPROPERTY: ${d.propAddr}\nOWNERSHIP: 100%\nCONSIDERATION: ${d.consideration||'$1.00'}\nCLOSING DATE: ${deedDate}\nCHECKED BOXES: ${boxes}\n\nList all 16 boxes, [X] checked [ ] unchecked. Include Seller's Declaration with signature lines. Output only document text.`;
+  const closingDate=d.signingDate||'_______________';
+  const grantor2Line=d.grantor2?'\nDate: _______________  Signature: _______________________  '+d.grantor2:'';
+  return `Generate completed NJ Seller's Residency Certification/Exemption (GIT/REP-3) with these exact values:
+
+SELLER'S INFORMATION:
+Name(s): ${d.grantor}${d.grantor2?' and '+d.grantor2:''}
+Current Street Address: ${d.grantorAddr}
+
+PROPERTY INFORMATION:
+Block(s): ${d.block}  Lot(s): ${d.lot}  Qualifier: ${d.qualifier||'N/A'}
+Street Address: ${d.propAddr}
+Seller's Percentage of Ownership: 100%
+Total Consideration: $1.00
+Owner's Share of Consideration: $1.00
+Closing Date: ${closingDate}
+
+CHECKED BOXES: Box 1, Box 2, Box 6
+
+SELLER'S DECLARATION:
+Date: ${closingDate}  Signature: _______________________  ${d.grantor}${grantor2Line}
+
+List all 16 boxes (1-16). Mark [X] for boxes 1, 2, and 6. Mark [ ] for all others. Include the full Seller's Declaration text at the bottom with the dates and signature lines filled in as shown above. Output only document text.`;
 }
-function showResults(){
-  document.getElementById('progressWrap').classList.remove('on');
-  document.getElementById('uploadSection').style.display='none';
-  document.getElementById('deed-body').textContent=docs.deed;
-  document.getElementById('aff-body').textContent=docs.aff;
-  document.getElementById('res-body').textContent=docs.res;
-  const name=extractedData.grantor||pdfFile.name.replace('.pdf','');
-  document.getElementById('deed-sub').textContent=name;
-  document.getElementById('aff-sub').textContent=`Block ${extractedData.block} · Lot ${extractedData.lot} · Burlington County`;
-  document.getElementById('res-sub').textContent=extractedData.propAddr||'';
-  document.getElementById('resultsSub').textContent=`3 documents generated from: ${pdfFile.name}`;
-  document.getElementById('results').classList.add('on');
-  toast('All 3 documents ready ✓');
+
+function downloadDOCX(){
+  if(!deedDocxBlob)return;
+  const safe=(extractedData.grantor||'deed').replace(/\s+/g,'_').replace(/[^A-Za-z0-9_]/g,'').substring(0,24);
+  const url=URL.createObjectURL(deedDocxBlob);
+  const a=document.createElement('a');a.href=url;
+  a.download=`Deed_${safe}_${new Date().toISOString().split('T')[0]}.docx`;
+  a.click();URL.revokeObjectURL(url);
+  toast('Downloading Deed (.docx)…');
 }
-function showDoc(n){
-  document.querySelectorAll('.doc-tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('dtab-'+n).classList.add('active');
-  document.querySelectorAll('[id^="view-"]').forEach(v=>v.style.display='none');
-  document.getElementById('view-'+n).style.display='block';
-}
-function downloadPDF(docKey,label){
-  const text=docs[docKey];if(!text)return;
+
+function downloadPDF(key,label){
+  const text=docs[key];if(!text)return;
   const {jsPDF}=window.jspdf;
   const doc=new jsPDF({unit:'pt',format:'letter'});
-  const margin=60,pageWidth=doc.internal.pageSize.getWidth(),pageHeight=doc.internal.pageSize.getHeight();
-  const maxWidth=pageWidth-margin*2,lineH=14;
+  const margin=60,pw=doc.internal.pageSize.getWidth(),ph=doc.internal.pageSize.getHeight();
+  const mw=pw-margin*2,lh=14;
   doc.setFont('Times','normal');doc.setFontSize(11);
-  const lines=doc.splitTextToSize(text,maxWidth);
+  const lines=doc.splitTextToSize(text,mw);
   let y=margin;
   lines.forEach(line=>{
-    if(y+lineH>pageHeight-margin){doc.addPage();y=margin;}
-    doc.text(line,margin,y);y+=lineH;
+    if(y+lh>ph-margin){doc.addPage();y=margin}
+    doc.text(line,margin,y);y+=lh;
   });
   const safe=(extractedData.grantor||'deed').replace(/\s+/g,'_').replace(/[^A-Za-z0-9_]/g,'').substring(0,24);
   const date=new Date().toISOString().split('T')[0];
   doc.save(`${label}_${safe}_${date}.pdf`);
-  toast('Downloading PDF...');
+  toast('Downloading PDF…');
 }
-function downloadAllPDFs(){
-  setTimeout(()=>downloadPDF('deed','Deed'),0);
-  setTimeout(()=>downloadPDF('aff','Affidavit_of_Consideration'),600);
-  setTimeout(()=>downloadPDF('res','Sellers_Residency'),1200);
-  toast('Downloading all 3 PDFs...');
+
+function downloadAll(){
+  downloadDOCX();
+  setTimeout(()=>downloadPDF('aff','Affidavit_of_Consideration'),400);
+  setTimeout(()=>downloadPDF('res','Sellers_Residency'),800);
+  toast('Downloading all 3 documents…');
 }
-function copyDoc(n){if(!docs[n])return;navigator.clipboard.writeText(docs[n]).then(()=>toast('Copied'));}
+
+function showResults(){
+  document.getElementById('progressWrap').classList.remove('on');
+  document.getElementById('uploadSection').style.display='none';
+  const name=extractedData.grantor||pdfFile.name.replace('.pdf','');
+  document.getElementById('resultsSub').textContent=`Generated from: ${pdfFile.name}${extractedData.signingDate?' · '+extractedData.signingDate:''}`;
+  document.getElementById('aff-sub').textContent=`Burlington County · Block ${extractedData.block} · Lot ${extractedData.lot} · Municipal Code ${extractedData.countyMunicipalCode}`;
+  document.getElementById('res-sub').textContent=`${name}${extractedData.signingDate?' · Closing: '+extractedData.signingDate:''}`;
+  document.getElementById('results').classList.add('on');
+  toast('All 3 documents ready ✓');
+}
+
 function setStep(n,state,label){
-  const icon=document.getElementById('s'+n+'icon');
-  const lbl=document.getElementById('s'+n+'label');
-  icon.className='step-icon '+state;
-  icon.textContent=state==='done'?'✓':n;
-  lbl.className='step-label '+state;
-  lbl.textContent=label;
+  const i=document.getElementById('s'+n+'i');
+  const l=document.getElementById('s'+n+'l');
+  i.className='psicon '+state;
+  i.textContent=state==='done'?'✓':n;
+  l.className='pslbl '+state;
+  l.textContent=label;
 }
+
 function resetAll(){
-  pdfFile=null;docs={deed:'',aff:'',res:''};extractedData={};
+  pdfFile=null;extractedData={};docs={aff:'',res:''};deedDocxBlob=null;
   document.getElementById('dz').style.display='block';
-  document.getElementById('fileLoaded').style.display='none';
+  document.getElementById('fileChip').style.display='none';
   document.getElementById('uploadSection').style.display='block';
   document.getElementById('results').classList.remove('on');
   document.getElementById('progressWrap').classList.remove('on');
@@ -380,9 +444,10 @@ function resetAll(){
   document.getElementById('fileIn').value='';
   hideError();
 }
-function showError(msg){const b=document.getElementById('errorBox');b.textContent='⚠ '+msg;b.classList.add('on');}
-function hideError(){document.getElementById('errorBox').classList.remove('on');}
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),3200);}
+
+function showError(m){const b=document.getElementById('errorBox');b.textContent='⚠ '+m;b.classList.add('on')}
+function hideError(){document.getElementById('errorBox').classList.remove('on')}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),3200)}
 </script>
 </body>
 </html>
