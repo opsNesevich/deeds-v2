@@ -210,6 +210,12 @@ function handleFile(f){
 function fmtDate(s){if(!s)return '';const d=new Date(s+'T12:00:00');return d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}
 function v(id){const e=document.getElementById(id);return e?e.value.trim():''}
 
+async function safeJson(res){
+  const text=await res.text();
+  try{return JSON.parse(text)}
+  catch(e){throw new Error(text.substring(0,200)||'Server error (empty response)')}
+}
+
 async function generate(){
   if(!pdfFile)return;
   const grantee=v('inp_grantee');
@@ -237,7 +243,7 @@ async function generate(){
     setStep(1,'active','Converting PDF to images…');
     const fd=new FormData();fd.append('pdf',pdfFile);
     const er=await fetch('/api/extract',{method:'POST',body:fd});
-    const ed=await er.json();
+    const ed=await safeJson(er);
     if(ed.error)throw new Error('PDF conversion failed: '+ed.error);
     setStep(1,'done','PDF converted');
 
@@ -254,21 +260,21 @@ async function generate(){
 
     setStep(3,'active','Filling Deed (.docx)…');
     const deedRes=await fetch('/api/fill-deed',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(extractedData)});
-    if(!deedRes.ok){const e=await deedRes.json();throw new Error('Deed error: '+e.error)}
+    if(!deedRes.ok){let msg='Deed error';try{const e=await deedRes.json();msg=e.error||msg}catch(e){}throw new Error(msg)}
     blobs.deed=await deedRes.blob();
     blobNames.deed=`Deed_${safe}_${date}.docx`;
     setStep(3,'done','Deed filled');
 
     setStep(4,'active','Filling Affidavit of Consideration…');
     const affRes=await fetch('/api/fill-affidavit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(extractedData)});
-    if(!affRes.ok){const e=await affRes.json();throw new Error('Affidavit error: '+e.error)}
+    if(!affRes.ok){let msg='Affidavit error';try{const e=await affRes.json();msg=e.error||msg}catch(e){}throw new Error(msg)}
     blobs.aff=await affRes.blob();
     blobNames.aff=`Affidavit_${safe}_${date}.pdf`;
     setStep(4,'done','Affidavit filled');
 
     setStep(5,'active',"Filling Seller's Residency…");
     const resRes=await fetch('/api/fill-residency',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(extractedData)});
-    if(!resRes.ok){const e=await resRes.json();throw new Error("Residency error: "+e.error)}
+    if(!resRes.ok){let msg="Residency error";try{const e=await resRes.json();msg=e.error||msg}catch(e){}throw new Error(msg)}
     blobs.res=await resRes.blob();
     blobNames.res=`Sellers_Residency_${safe}_${date}.pdf`;
     setStep(5,'done',"Seller's Residency filled");
@@ -291,7 +297,7 @@ async function callClaudeVision(prompt,images,maxTokens){
     system:'You are a legal document specialist. Read scanned NJ deed documents precisely. Return only valid JSON when asked.',
     messages:[{role:'user',content}]
   })});
-  const data=await res.json();
+  const data=await safeJson(res);
   if(data.error)throw new Error(data.error.message);
   return data.content.map(b=>b.text||'').join('');
 }
