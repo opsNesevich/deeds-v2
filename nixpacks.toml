@@ -1,8 +1,0 @@
-[phases.setup]
-nixPkgs = ["poppler_utils"]
-
-[phases.build]
-cmds = ["npm install"]
-
-[start]
-cmd = "npm start"
